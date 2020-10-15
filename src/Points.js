@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import EachItem from "./EachItem";
 const Points = () => {
-  let initialVlaues = JSON.parse(window.localStorage.getItem("purchasedItem"));
+  let initialVlaues =
+    JSON.parse(window.localStorage.getItem("purchasedItem")) || [];
   const [item, setItem] = useState("");
   const [amount, setAmount] = useState("");
   const [purchasedItem, setPurchasedItem] = useState(initialVlaues);
@@ -89,7 +90,7 @@ const Points = () => {
           <table className="table">
             <thead className="thead">
               <tr>
-                <td>Customer Id</td>
+                <td>Item Id</td>
                 <td>Product</td>
                 <td>Price</td>
                 <td>Points</td>

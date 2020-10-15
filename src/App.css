@@ -32,9 +32,12 @@
   transition: 0.3s;
   width: 40%;
   height: 325px;
-  margin: 10% auto;
+  margin: 20px auto;
   flex-direction: column;
   border-radius: 8px;
+}
+.inputs-section {
+  margin: 20px auto;
 }
 .item {
   margin: 15px;

@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
+import EachItem from "./EachItem";
 const Points = () => {
+  let initialVlaues = JSON.parse(window.localStorage.getItem("purchasedItem"));
   const [item, setItem] = useState("");
   const [amount, setAmount] = useState("");
-  const [purchasedItem, setPurchasedItem] = useState([]);
-  //   const [customer, setCustomer] = useState(0);
-  //   const [isDisabled, setIsDisabled] = useState(false);
+  const [purchasedItem, setPurchasedItem] = useState(initialVlaues);
   const [total, setTotal] = useState(0);
   useEffect(() => {
+    JSON.parse(localStorage.getItem("purchasedItem"));
     setPurchasedItem(purchasedItem);
+    window.localStorage.setItem("purchasedItem", JSON.stringify(purchasedItem));
     let totalPoints = purchasedItem.reduce((prev, cur) => {
       return prev + parseInt(cur.point);
     }, 0);
@@ -51,7 +53,7 @@ const Points = () => {
     <div className="App">
       <header className="App-header">Coding Challenge</header>
 
-      <section className="section">
+      <section className="section inputs-section">
         <h2>Purchase Item</h2>
         <div className="item">
           <label>Product Name</label>
@@ -95,14 +97,7 @@ const Points = () => {
             </thead>
             <tbody>
               {purchasedItem.map((item) => {
-                return (
-                  <tr key={item.custNo}>
-                    <td> {item.custNo}</td>
-                    <td>{item.item}</td>
-                    <td>${item.amount}</td>
-                    <td> {item.point}</td>
-                  </tr>
-                );
+                return <EachItem item={item} />;
               })}
             </tbody>
           </table>

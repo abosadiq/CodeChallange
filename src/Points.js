@@ -1,21 +1,37 @@
 import React, { useState, useEffect } from "react";
-import EachItem from "./EachItem";
 const Points = () => {
-  let initialVlaues =
-    JSON.parse(window.localStorage.getItem("purchasedItem")) || [];
+  var items = JSON.parse(localStorage.getItem("transactions")) || [];
   const [item, setItem] = useState("");
   const [amount, setAmount] = useState("");
-  const [purchasedItem, setPurchasedItem] = useState(initialVlaues);
+  const [purchasedItem, setPurchasedItem] = useState(items);
+
   const [total, setTotal] = useState(0);
   useEffect(() => {
-    JSON.parse(localStorage.getItem("purchasedItem"));
     setPurchasedItem(purchasedItem);
-    window.localStorage.setItem("purchasedItem", JSON.stringify(purchasedItem));
     let totalPoints = purchasedItem.reduce((prev, cur) => {
       return prev + parseInt(cur.point);
     }, 0);
     setTotal(totalPoints);
-  }, [purchasedItem]);
+
+    if (items && items.length) {
+      items &&
+        items.map((x, i) => {
+          let d = new Date();
+          let itemDate = new Date(x.custNo);
+
+          let threeMonth = d.setMonth(d.getMonth() - 3);
+          console.log(threeMonth.toString(), "00000");
+
+          if (itemDate < threeMonth) {
+            console.log("previous item ", x);
+            let transactions = JSON.parse(localStorage.getItem("transactions"));
+            transactions.splice(i, 1);
+            localStorage.setItem("transactions", JSON.stringify(transactions));
+          }
+          return 0;
+        });
+    }
+  }, [purchasedItem, items]);
 
   const onSubmit = () => {
     if (amount === "") {
@@ -47,14 +63,18 @@ const Points = () => {
 
       setItem("");
       setAmount("");
+      localStorage.setItem("transactions", JSON.stringify(newArr));
     }
   };
-
+  const availableTransactions = JSON.parse(localStorage.getItem("transactions"))
+    ? JSON.parse(localStorage.getItem("transactions"))
+    : purchasedItem;
+  console.log("availableTransactions", availableTransactions);
   return (
     <div className="App">
       <header className="App-header">Coding Challenge</header>
 
-      <section className="section inputs-section">
+      <section className="section">
         <h2>Purchase Item</h2>
         <div className="item">
           <label>Product Name</label>
@@ -83,23 +103,32 @@ const Points = () => {
           </button>
         </div>
       </section>
-      {purchasedItem && !!purchasedItem.length && (
+      {availableTransactions && !!availableTransactions.length && (
         <section className="section">
           <h2>List of Purchased item and Rewards</h2>
           <p>Total Points: {total}</p>
           <table className="table">
             <thead className="thead">
               <tr>
-                <td>Item Id</td>
+                <td>Customer Id</td>
                 <td>Product</td>
                 <td>Price</td>
                 <td>Points</td>
               </tr>
             </thead>
             <tbody>
-              {purchasedItem.map((item) => {
-                return <EachItem item={item} />;
-              })}
+              {availableTransactions &&
+                availableTransactions.length &&
+                availableTransactions.map((item) => {
+                  return (
+                    <tr key={item.custNo}>
+                      <td> {item.custNo}</td>
+                      <td>{item.item}</td>
+                      <td>${item.amount}</td>
+                      <td> {item.point}</td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </section>

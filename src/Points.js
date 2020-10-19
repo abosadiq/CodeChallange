@@ -6,7 +6,26 @@ const Points = () => {
   const [purchasedItem, setPurchasedItem] = useState(items);
 
   const [total, setTotal] = useState(0);
+  const [eachMonth, setEachMonth] = useState(0);
+  const [monthName, setMonthName] = useState("");
+  const [monthOfTrans, setMonthOfTrans] = useState("");
   useEffect(() => {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    let monthArr = [];
+
     setPurchasedItem(purchasedItem);
     let totalPoints = purchasedItem.reduce((prev, cur) => {
       return prev + parseInt(cur.point);
@@ -18,18 +37,39 @@ const Points = () => {
         items.map((x, i) => {
           let d = new Date();
           let itemDate = new Date(x.custNo);
-
+          var checkMonth = monthNames[itemDate.getMonth()];
+          console.log(monthNames[itemDate.getMonth()]);
+          monthArr.push(x);
           let threeMonth = d.setMonth(d.getMonth() - 3);
-          console.log(threeMonth.toString(), "00000");
-
           if (itemDate < threeMonth) {
-            console.log("previous item ", x);
+            x.point = 0;
             let transactions = JSON.parse(localStorage.getItem("transactions"));
-            transactions.splice(i, 1);
+            // transactions.splice(i, 1);
+            transactions[i] = x;
             localStorage.setItem("transactions", JSON.stringify(transactions));
           }
           return 0;
         });
+      monthArr.map((mnth) => {
+        let itemDate = new Date(mnth.custNo);
+        var checkMonth = monthNames[itemDate.getMonth()];
+        if (mnth) {
+          monthArr.map((nest) => {
+            let nestDate = new Date(nest.custNo);
+            var nestMonth = monthNames[nestDate.getMonth()];
+            if (nestMonth == checkMonth) {
+              if (nest.custNo != mnth.custNo) {
+                let pointsForEachMonth = nest.point + mnth.point;
+                setEachMonth(pointsForEachMonth);
+                setMonthName(nestMonth);
+              }
+            }
+          });
+        }
+        return null;
+      });
+
+      console.log("eachMonth, ", eachMonth, monthOfTrans);
     }
   }, [purchasedItem, items]);
 
@@ -107,6 +147,9 @@ const Points = () => {
         <section className="section">
           <h2>List of Purchased item and Rewards</h2>
           <p>Total Points: {total}</p>
+          <p>
+            Points in {monthName} : {eachMonth}
+          </p>
           <table className="table">
             <thead className="thead">
               <tr>

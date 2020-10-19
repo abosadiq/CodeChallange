@@ -8,7 +8,7 @@ const Points = () => {
   const [total, setTotal] = useState(0);
   const [eachMonth, setEachMonth] = useState(0);
   const [monthName, setMonthName] = useState("");
-  const [monthOfTrans, setMonthOfTrans] = useState("");
+
   useEffect(() => {
     const monthNames = [
       "January",
@@ -31,14 +31,11 @@ const Points = () => {
       return prev + parseInt(cur.point);
     }, 0);
     setTotal(totalPoints);
-
     if (items && items.length) {
       items &&
         items.map((x, i) => {
           let d = new Date();
           let itemDate = new Date(x.custNo);
-          var checkMonth = monthNames[itemDate.getMonth()];
-          console.log(monthNames[itemDate.getMonth()]);
           monthArr.push(x);
           let threeMonth = d.setMonth(d.getMonth() - 3);
           if (itemDate < threeMonth) {
@@ -57,19 +54,18 @@ const Points = () => {
           monthArr.map((nest) => {
             let nestDate = new Date(nest.custNo);
             var nestMonth = monthNames[nestDate.getMonth()];
-            if (nestMonth == checkMonth) {
-              if (nest.custNo != mnth.custNo) {
+            if (nestMonth === checkMonth) {
+              if (nest.custNo !== mnth.custNo) {
                 let pointsForEachMonth = nest.point + mnth.point;
                 setEachMonth(pointsForEachMonth);
                 setMonthName(nestMonth);
               }
             }
+            return 0;
           });
         }
         return null;
       });
-
-      console.log("eachMonth, ", eachMonth, monthOfTrans);
     }
   }, [purchasedItem, items]);
 
@@ -109,7 +105,6 @@ const Points = () => {
   const availableTransactions = JSON.parse(localStorage.getItem("transactions"))
     ? JSON.parse(localStorage.getItem("transactions"))
     : purchasedItem;
-  console.log("availableTransactions", availableTransactions);
   return (
     <div className="App">
       <header className="App-header">Coding Challenge</header>
